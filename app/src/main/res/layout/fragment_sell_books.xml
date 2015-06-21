@@ -6,12 +6,15 @@
     tools:context="hackathon.angelhack.fragment.SellBooks"
     android:orientation="vertical">
 
-    <Button
-
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/selling_list"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="wrap_content"
 
-        android:text="Scan ISBN" />
+        android:layout_margin="16dp">
+
+    </android.support.v7.widget.RecyclerView>
+
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/multiple_actions"
@@ -45,5 +48,6 @@
             fab:fab_colorPressed="@color/pink_pressed"/>
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
 
 </RelativeLayout>

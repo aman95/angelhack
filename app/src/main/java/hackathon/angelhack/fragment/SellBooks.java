@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +15,19 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import hackathon.angelhack.BookScan;
 import hackathon.angelhack.R;
-
-//import com.parse.FindCallback;
-//import com.parse.ParseException;
-//import com.parse.ParseQuery;
-//import com.parse.ParseUser;
+import hackathon.angelhack.adapters.BooksSellAdapter;
+import hackathon.angelhack.adapters.BooksSellItems;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +47,12 @@ public class SellBooks extends Fragment {
     private int mPosition;
     private String mUsername;
 
+    protected List<BooksSellItems> feedItems = new ArrayList<>();
+
+    RecyclerView sellItems;
+
     String toast;
+    String isbn;
 
     /**
      * Use this factory method to create a new instance of
@@ -80,8 +93,49 @@ public class SellBooks extends Fragment {
 
         final View rootView = inflater.inflate(R.layout.fragment_sell_books, container, false);
 
+        sellItems = (RecyclerView)rootView.findViewById(R.id.selling_list);
+        sellItems.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity().getApplicationContext());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        sellItems.setLayoutManager(llm);
+        final BooksSellAdapter adapter = new BooksSellAdapter(getActivity().getApplicationContext(), feedItems);
+        sellItems.setAdapter(adapter);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("sell");
+        query.whereEqualTo("user_email", ParseUser.getCurrentUser().getEmail());
+        query.findInBackground(new FindCallback<ParseObject>() {
+            public void done(List<ParseObject> bookList, ParseException e) {
+                if (e == null) {
+                    if(bookList.size() == 0) {
+                        Toast.makeText(getActivity().getApplicationContext(),"Not data fetched",Toast.LENGTH_SHORT).show();
+                        Log.d("score", "Retrieved " + bookList.size() + " scores");
+                    } else {
+
+                        for(int i=0;i<bookList.size();i++) {
+                            BooksSellItems feedItem = new BooksSellItems(bookList.get(i).getString("name"),bookList.get(i).getString("author"),bookList.get(i).getString("price"));
+                            feedItems.add(feedItem);
+                        }
+//                        bookName.setText(bookList.get(0).getString("name"));
+//                        bookAuthor.setText(bookList.get(0).getString("author"));
+//                        bookLang.setText(bookList.get(0).getString("lang"));
+//                        bookPages.setText(bookList.get(0).getString("pages"));
+//                        bookIsbn.setText(isbn);
+                    }
+
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                    Toast.makeText(getActivity().getApplicationContext(), "Error Occured: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+                    adapter.notifyDataSetChanged();
+
+
+
 //        final TextView tv = (TextView)rootView.findViewById(R.id.textView);
 //        tv.setText("Position = "+mPosition+" Username: "+mUsername);
+
 
         com.getbase.floatingactionbutton.FloatingActionButton scanBtn = (com.getbase.floatingactionbutton.FloatingActionButton) rootView.findViewById(R.id.btnScan);
         scanBtn.setOnClickListener(new View.OnClickListener() {
@@ -116,7 +170,9 @@ public class SellBooks extends Fragment {
                 getActivity().startActivityForResult(i,1);
             }
 
-            // At this point we may or may not have a reference to the activity
+        }
+        if(requestCode == 22) {
+//            isbn = data.getStringExtra("isbn")
 
         }
     }

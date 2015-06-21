@@ -28,7 +28,8 @@
         android:layout_height="200dp"
         android:layout_width="match_parent"
         android:layout_below="@+id/camera_btn"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:id="@+id/view">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -87,6 +88,24 @@
 
                 android:textStyle="bold"
                 android:text="Pages: "/>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginTop="6dp"
+
+                android:textStyle="bold"
+                android:text="Condition: "/>
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginTop="6dp"
+
+                android:textStyle="bold"
+                android:text="Price: "/>
 
         </LinearLayout>
 
@@ -141,11 +160,34 @@
             android:textStyle="normal"
             android:text="Book pages"/>
 
+            <SeekBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/book_condition"
+                android:max="10" />
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:id="@+id/book_price"
+                android:inputType="number"
+                android:background="@color/background_material_light"
+                />
+
         </LinearLayout>
 
         </RelativeLayout>
 
 
     </android.support.v7.widget.CardView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Book For Sale!"
+        android:id="@+id/add_book_sale"
+        android:layout_below="@+id/view"
+        android:layout_centerHorizontal="true"
+        android:onClick="goForSale"
+        android:layout_marginTop="51dp" />
 
 </RelativeLayout>
